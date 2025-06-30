@@ -58,8 +58,8 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "About",
+    "title": "Sobre",
     "section": "",
-    "text": "About\nEste site foi desenvolvido por Abner Palhares; Daiane Fernandes; Maria Izabel Leite com o objetivo de apresentar as análises realizadas a partir do conjunto de dados PowderyMildew, disponibilizado pelo pacote Epifitter no R. A atividade integra o trabalho final da disciplina FIP 606 – Análise e Visualização de Dados em Fitopatologia, ministrada pelo professor Emerson Del Ponte.\nA análise teve como foco a severidade da doença oídio, causada por Leveillula taurica, em tomateiro cultivado sob diferentes sistemas de irrigação e níveis de umidade do solo, em um sistema de cultivo orgânico."
+    "text": "Sobre\nEste site foi desenvolvido por Abner Palhares; Daiane Fernandes; Maria Izabel Leite com o objetivo de apresentar as análises realizadas a partir do conjunto de dados PowderyMildew, disponibilizado pelo pacote Epifitter no R. A atividade integra o trabalho final da disciplina FIP 606 – Análise e Visualização de Dados em Fitopatologia, ministrada pelo professor Emerson Del Ponte.\nA análise teve como foco a severidade da doença oídio, causada por Leveillula taurica, em tomateiro cultivado sob diferentes sistemas de irrigação e níveis de umidade do solo, em um sistema de cultivo orgânico."
   }
 ]

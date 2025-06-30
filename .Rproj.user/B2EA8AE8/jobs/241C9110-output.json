@@ -1,0 +1,6 @@
+[1,"==> quarto preview index.qmd --to html --no-watch-inputs --no-browse\n\n"]
+[1,"pandoc \n  to: html\n  output-file: index.html\n  standalone: true\n  title-prefix: Powdery Mildew - Análise de Dados\n  section-divs: true\n  html-math-method: mathjax\n  wrap: none\n  default-image-extension: png\n  toc: true\n  \nmetadata\n  pagetitle: Powdery Mildew - Análise de Dados\n  document-css: false\n  link-citations: true\n  date-format: long\n  lang: en\n  theme: minty\n  page-layout: full\n  code-copy: true\n  \n"]
+[1,"Output created: docs\\index.html\n\nPreparing to preview\n"]
+[1,"\n"]
+[1,"Watching files for changes\nBrowse at http://localhost:4995/\n"]
+[1,"GET: /\n"]

@@ -3,7 +3,7 @@
     "path": "C:/Users/daian/OneDrive/Documentos/trabalho_final_r/projeto_final_oidio/index.qmd",
     "project_path": "index.qmd",
     "type": "quarto_markdown",
-    "hash": "391224213",
+    "hash": "3542839049",
     "contents": "",
     "dirty": false,
     "created": 1751304378732.0,
@@ -16,16 +16,16 @@
         "Source": "Source",
         "docOutlineVisible": "1",
         "rmdVisualCollapsedChunks": "",
-        "rmdVisualModeLocation": "602:101.5999984741211",
+        "rmdVisualModeLocation": "7:0",
         "cursorPosition": "0,0",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1751313221,
+    "lastKnownWriteTime": 1751313650,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1751313221433,
+    "last_content_update": 1751313650663,
     "read_only": false,
     "read_only_alternatives": []
 }
