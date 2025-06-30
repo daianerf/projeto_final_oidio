@@ -1,0 +1,37 @@
+---
+title: "Obtenção dos dados"
+---
+
+Os dados utilizados neste estudo foram obtidos a partir do conjunto *PowderyMildew*, disponível no pacote `Epifitter` do R (RStudio®). Este conjunto reúne informações experimentais sobre a progressão do oídio (*Leveillula taurica*) em tomateiros cultivados sob diferentes sistemas de irrigação e níveis de umidade do solo,em um sistema de produção orgânico.
+
+O pacote `Epifitter` foi desenvolvido para facilitar a análise epidemiológica de doenças em plantas, oferecendo um conjunto de funções para visualização, descrição, ajuste e comparação de curvas de progresso de doenças.
+
+# Estrutura do conjunto de dados
+
+O *data frame* *PowderyMildew* contém 240 observações distribuídas em 5 variáveis principais, descritas a seguir:
+
+-   **Irrigation_type**: indica o sistema de irrigação adotado, sendo:
+
+    -   MS: microaspersão;
+
+    -   MS above canopy: microaspersão acima do dossel;
+
+    -   Overhead: aspersão aérea;
+
+    -   Drip: irrigação por gotejamento;
+
+    -   Furrow: sulco.
+
+-   **Moisture**: nível de umidade do solo no momento da avaliação, classificado em:
+
+    -   "High" (alta umidade);
+
+    -   "Moderate" (umidade moderada).
+
+-   **Block**: identifica os blocos experimentais, representando as repetições no delineamento experimental;
+
+-   **Time**: vetor numérico contendo os dias correspondentes aos pontos de avaliação da doença ao longo do tempo;
+
+-   **Sev**: vetor numérico com os valores de severidade da doença, registrados em escala proporcional (valores entre 0 e 1), representando a proporção da área foliar afetada.
+
+Esse banco de dados foi utilizado como base para todas as análises estatísticas e gráficas realizadas neste trabalho.
