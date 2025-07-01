@@ -2,6 +2,9 @@
 title: "Análise de dados do PowderyMildew:"
 ---
 
+
+
+
 # Introdução
 
 O banco de dados analisado neste trabalho refere-se aos resultados de um experimento conduzido com o objetivo de avaliar o desenvolvimento do oídio (*Leveillula taurica*) na cultura do tomateiro sob diferentes condições de irrigação e umidade do solo. 
@@ -58,6 +61,9 @@ Por meio da análise dos dados, objetivou-se avaliar a influência de diferentes
 
 A primeira etapa para a análise dos dados é a instalação e o carregamento dos pacotes e dados no ambiente R.
 
+
+
+
 ```{r, warning=FALSE, message=FALSE}
 # Instalar e carregar pacotes
 #Verificação e instalação automática de pacotes necessários
@@ -90,15 +96,24 @@ library(emmeans)
 library(multcomp)
 ```
 
+
+
+
 ### Importação dos dados
 
 Como os dados de severidade estão localizados em uma planilha do Excel, para realizar a importação dos dados necessitou-se utilizar a função `read_excel( )` do pacote `readxl`. O data frame foi atribuído ao objeto denominado *dados*.
+
+
+
 
 ```{r}
 dados <- read_excel("dados.xlsx")
 
 dados
 ```
+
+
+
 
 ### Verificação do conjunto de dados
 
@@ -116,6 +131,9 @@ A função `skim()`, do pacote `skimr` fornece um resumo estatístico mais detal
 
 A função `names()` foi empregada para listar os nomes reais das colunas do dataframe, permitindo identificar com clareza as variáveis disponíveis para análise.
 
+
+
+
 ```{r}
 glimpse(dados)
 
@@ -123,6 +141,9 @@ skim(dados)
 
 names(dados)
 ```
+
+
+
 
 ## Estabelecendo o visual do trabalho
 
@@ -132,6 +153,9 @@ Para aprimorar a estética visual de gráficos e aplicações no R, foram adicio
 
 As fontes adicionadas foram: **Inter, Manrope, Nunito, Work Sans, Lexend, Raleway, Quicksand, Roboto e Poppins.\
 **Após a adição das fontes, a função `showtext_auto()` foi ativada. Essa função garante que as fontes personalizadas sejam corretamente renderizadas em gráficos gerados com o R, inclusive ao exportar para imagens.
+
+
+
 
 ```{r}
 font_add_google(name = "inter", family = "inter")
@@ -145,6 +169,9 @@ font_add_google(name = "roboto", family = "roboto")
 font_add_google(name = "poppins", family = "poppins")
 showtext_auto()
 ```
+
+
+
 
 #### Estabelecendo cores
 
@@ -161,6 +188,9 @@ Cada tipo de irrigação é representado por uma cor específica, facilitando a 
 -   MS above canopy: laranja (#E68A2E);
 
 -   Overhead: amarelo brilhante (#FFDE00);
+
+
+
 
 ```{r}
 cores_irrigation <- c(
@@ -180,23 +210,41 @@ cores_contorno <- c(
 )
 ```
 
+
+
+
 ### Análise exploratória dos dados
 
 Na etapa inicial da análise exploratória, foi utilizada a função `plot_missing()` do pacote `DataExplorer`, que gera um gráfico indicando a porcentagem de dados faltantes (valores NA) por variável no conjunto de dados. Essa visualização permite identificar rapidamente colunas com dados faltantes, facilitando decisões sobre as análises subsequentes.
+
+
+
 
 ```{r}
 plot_missing(dados)
 ```
 
+
+
+
 A função `summary()` é uma ferramenta prática para explorar rapidamente os dados. É usada para gerar um resumo estatístico básico de um data frame. Fornece medidas como mínimo, máximo, média, mediana e quartis para variáveis numéricas, e a frequência para variáveis categóricas.
+
+
+
 
 ```{r}
 summary(dados)
 ```
 
+
+
+
 ### Organização dos dados
 
 Ao examinar os dados, observou-se que os tratamentos (irrigation_type: Drip, MS, Furrow, MS Above canopy, Overhead) não estão igualmente distribuídos entre as duas condições de umidade (moisture: high e moderate). Dessa forma para a análise visual dos dados resolveu-se dividi-los de acordo com seus níveis de umidade.
+
+
+
 
 ```{r}
 # Subconjunto para irrigação com umidade moderada
@@ -210,6 +258,9 @@ dados_moderate
 dados_high
 ```
 
+
+
+
 ### Análise visual
 
 Usando o pacote `ggplot2`, foi explorado visualmente, por meio de diferentes gráficos, os dados de severidade da doença.
@@ -221,6 +272,9 @@ Nesta análise, foram desenvolvidos dois gráficos de dispersão. Esses gráfico
 ##### Gráfico de Severidade ao Longo do Tempo – Umidade Moderada
 
 Para o conjunto dados_moderate, foi utilizado o tempo (time) no eixo X e a severidade da doença (sev) no eixo Y. A variável **irrigation_type** foi representada por diferentes cores, facilitando a comparação entre os tratamentos. A função `geom_jitter()` foi empregada para aplicar uma leve dispersão horizontal aos pontos. As cores dos tratamentos foram definidas manualmente com `scale_color_manual()` e a estética do gráfico foi finalizada com `theme_minimal()`.
+
+
+
 
 ```{r}
 # Gráficos de pontos (dados de umidade moderada)
@@ -245,9 +299,15 @@ ggplot(dados_moderate, aes(x = time, y = sev, color = irrigation_type)) +
   )
 ```
 
+
+
+
 ##### **Gráfico de Severidade ao Longo do Tempo – Umidade Alta**
 
 Para a condição de **umidade alta**, foi construído um gráfico semelhante, utilizando o conjunto dados_high.
+
+
+
 
 ```{r}
 # Gráficos de pontos (dados de umidade alta)
@@ -272,6 +332,9 @@ ggplot(dados_high, aes(x = time, y = sev, color = irrigation_type)) +
   )
 ```
 
+
+
+
 #### Gráfico de pontos e linhas
 
 Antes da construção do gráfico, os dados foram agrupados pelas variáveis tratamento (combinação de tipo de irrigação + umidade), e time (tempo de avaliação). Em seguida, foi calculada a média da severidade (sev_mean) e o desvio padrão (sev_sd) para cada grupo. Ambas as métricas foram multiplicadas por 100 para expressar os valores em percentual:
@@ -287,6 +350,9 @@ Além disso, a variável *irrigation_type* foi convertida para fator, permitindo
 Em seguida, os dados foram agregados com `group_by()`. Com `summarise()`, foram calculadas: A média da severidade da doença (`sev_mean`), expressa em porcentagem. O desvio padrão da severidade (`sev_sd`), também em porcentagem.
 
 Esses valores foram reunidos em um novo conjunto de dados (*dados3*) que serviu de base para a construção de gráficos de tendência com barras de erro, permitindo a visualização da evolução da severidade da doença ao longo do tempo, com comparação entre os diferentes tratamentos.
+
+
+
 
 ```{r}
 #ALTERAÇÃO DE DADOS
@@ -304,7 +370,13 @@ dados3 <- dados2 %>%
   )
 ```
 
+
+
+
 ##### Gráfico de pontos e linhas para severidade moderada
+
+
+
 
 ```{r}
 # Gráfico para Moderate moisture
@@ -338,7 +410,13 @@ ggplot(
   scale_fill_manual(values = cores_irrigation)
 ```
 
+
+
+
 ##### Gráfico de pontos e linhas para severidade alta
+
+
+
 
 ```{r}
 # Gráfico para high moisture
@@ -372,6 +450,9 @@ ggplot(
   scale_fill_manual(values = cores_irrigation)
 ```
 
+
+
+
 #### Gráfico de pontos e linhas animado
 
 Foram criadas animações para ilustrar a evolução da severidade da doença ao longo do tempo sob condição específicas de solo, considerando os diferentes tipos de irrigação avaliados no experimento.
@@ -383,6 +464,9 @@ A animação foi gerada com a função `animate()` do pacote gganimate, com taxa
 Essa visualização dinâmica permite observar de forma clara como a severidade da doença evolui ao longo do tempo sob diferentes tipos de irrigação.
 
 ##### Umidade moderada
+
+
+
 
 ```{r}
 
@@ -420,9 +504,15 @@ gif_moderate <- ggplot(
 #anim_save("severidade_moderate_moisture.gif", gif_anim_moderate)
 ```
 
+
+
+
 ![](severidade_moderate_moisture.gif)
 
 ##### Umidade alta
+
+
+
 
 ```{r}
 gif_high <- ggplot(
@@ -462,6 +552,9 @@ gif_high <- ggplot(
 #anim_save("severidade_high_moisture.gif", gif_anim_high)
 ```
 
+
+
+
 ![](severidade_high_moisture.gif)
 
 ###### Observações:
@@ -476,6 +569,9 @@ Mais especificamente:
 
 Devido a essas lacunas no delineamento, optamos por remover as combinações incompletas. Como consequência, os tratamentos "Drip" (alta umidade) e "Furrow" (umidade moderada) foram excluídos da análise, uma vez que não permitem a comparação entre os dois níveis de umidade. Essa decisão teve como objetivo garantir uma análise da interação entre os métodos de irrigação sob diferentes condições de umidade.
 
+
+
+
 ```{r}
 # Identificar quais irrigation_type têm os dois níveis de moisture
 tipos_validos <- dados %>%
@@ -489,9 +585,15 @@ dados_filtrados <- dados %>%
   filter(irrigation_type %in% tipos_validos)
 ```
 
+
+
+
 #### Boxplot de severidade final
 
 Filtra o conjunto dados_filtrados para manter apenas as observações no tempo 63, considerado como tempo final de avaliação da severidade.
+
+
+
 
 ```{r}
 dados_63 <- dados_filtrados |> 
@@ -499,7 +601,13 @@ dados_63 <- dados_filtrados |>
 
 ```
 
+
+
+
 Após visualizar a severidade com todos os tempos de avaliação, selecionou-se apenas a severidade final para plotar em um boxplot.
+
+
+
 
 ```{r}
 
@@ -532,6 +640,9 @@ guides(
 )
 ```
 
+
+
+
 -   **Alta umidade (High moisture)**
 
     -   O tratamento MS apresenta a maior severidade média e também uma distribuição mais compacta, indicando que os valores são consistentemente altos nesse tratamento, sem muita variação entre repetições;
@@ -558,10 +669,16 @@ Para a realização da ANOVA, foi considerado apenas o último tempo de avaliaç
 
 A análise do modelo de ANOVA foi realizada utilizando a função `aov`, a qual faz parte do pacote base do R. Os resultados da ANOVA foram obtidos com s`ummary(aov_dados63)`, permitindo a identificação de efeitos significativos entre os tratamentos.
 
+
+
+
 ```{r}
 aov_dados63 = aov(sev ~ irrigation_type*moisture + as.factor(block), data = dados_63)
 summary(aov_dados63)
 ```
+
+
+
 
 | Efeito | df | F value | Pr(\>F) | Significância |
 |---------------|---------------|---------------|---------------|---------------|
@@ -590,6 +707,9 @@ A hipótese nula (H₀) foi rejeitada, uma vez que os valores de *p* para os fat
 
 Para verificar a normalidade dos resíduos do modelo de ANOVA, foi construído um histograma dos resíduos utilizando a função `hist()`. O comando `residuals(aov_dados63)` extrai os resíduos do modelo.
 
+
+
+
 ```{r}
 # Histogram
 hist(residuals(aov_dados63),
@@ -599,6 +719,9 @@ hist(residuals(aov_dados63),
      col = "lightgreen",
      border = "black")
 ```
+
+
+
 
 ###### Interpretação
 
@@ -610,6 +733,9 @@ Para avaliar as suposições do modelo linear ajustado, foi utilizada a simulaç
 
 Primeiramente, foi ajustado um modelo linear aos dados. Em seguida, os resíduos foram simulados com a função `simulateResiduals()` do pacote `DHARMa`, que gera resíduos padronizados baseados em simulações sob o modelo ajustado. Essa abordagem é especialmente útil para detectar desvios de normalidade, heterocedasticidade e efeitos de estrutura nos dados.
 
+
+
+
 ```{r}
 modelo_lm <- lm(sev ~ irrigation_type * moisture + as.factor(block), data = dados_63)
 
@@ -619,6 +745,9 @@ residuos_sim <- simulateResiduals(fittedModel = modelo_lm)
 # 5. Plotar diagnósticos
 plot(residuos_sim)
 ```
+
+
+
 
 ###### Painel esquerdo - QQ-plot dos resíduos simulados:
 
@@ -658,6 +787,9 @@ Em seguida, foi construído um gráfico QQ-plot (Quantile-Quantile). Esse gráfi
 
 Por fim, foi aplicado o teste de *Shapiro-Wilk* `shapiro.test()`. Esse teste estatístico avalia formalmente a hipótese nula de que os resíduos seguem uma distribuição normal. Um valor de *p* ≥ que 0,05 indica que não há evidências para rejeitar a normalidade dos resíduos, confirmando que essa suposição foi atendida no modelo.
 
+
+
+
 ```{r}
 check_normality(aov_dados63)
 
@@ -668,6 +800,9 @@ qqline(residuals(aov_dados63), col = "red", lwd = 2)
 # Teste de Shapiro-Wilk
 shapiro.test(residuals(aov_dados63))
 ```
+
+
+
 
 ###### Homocedasticidade
 
@@ -681,6 +816,9 @@ Um valor de *p* \> 0,05 indica que não há evidência significativa de heteroge
 **Levene’s test (**`leveneTest`**):** Este teste é mais robusto quando a normalidade não pode ser totalmente garantida.\
 Um *p* \> 0,05 sugere homogeneidade de variâncias entre os grupos. Se o valor for menor que 0,05, isso indicaria heterocedasticidade, violando uma das suposições da ANOVA.
 
+
+
+
 ```{r}
 check_heteroscedasticity(aov_dados63)
 
@@ -692,11 +830,17 @@ leveneTest(sev ~ interaction(irrigation_type, moisture), data = dados_63)
 
 ```
 
+
+
+
 ### Teste de comparação de médias
 
 A função `emmeans()` (Estimated Marginal Means) calcula as médias ajustadas — também conhecidas como médias marginais estimadas — para as combinações dos fatores `irrigation_type` e `moisture`, com base no modelo ajustado `modelo_lm`.
 
 A função `cld()` (Compact Letter Display) agrupa os tratamentos com base nas comparações múltiplas de médias.
+
+
+
 
 ```{r}
 # Médias ajustadas
@@ -708,6 +852,9 @@ letras <- cld(medias, adjust = "sidak", Letters = letters)
 # Visualizar resultado
 print(letras)
 ```
+
+
+
 
 As médias ajustadas foram comparadas por meio de contrastes pareados com correção de Sidak, apropriada para múltiplas comparações entre combinações de tratamentos fatoriais. Grupos com letras iguais não diferem entre si ao nível de significância de 5%.
 
@@ -721,11 +868,17 @@ As médias ajustadas foram comparadas por meio de contrastes pareados com corre�
 | MS | Alta | 0.35 | 0.00898 | 10 | 0.321 | 0.38 | b |
 | MS | Moderada | 0.404 | 0.00898 | 10 | 0.3744 | 0.433 | c |
 
+
+
+
 ```{r}
 emmeans(modelo_lm, pairwise ~ moisture, adjust = "tukey")
 cld(emmeans(modelo_lm, ~ moisture), adjust = "tukey")
 
 ```
+
+
+
 
 A tabela abaixo apresenta as médias ajustadas da severidade da doença para cada nível de umidade, com erro padrão, intervalos de confiança e agrupamento por letras. O agrupamento foi realizado utilizando o método de Sidak (α = 0,05), ajustado a partir de comparações múltiplas.
 
@@ -741,6 +894,9 @@ Para quantificar o avanço da doença ao longo do tempo, foi realizada a anális
 
 A análise foi conduzida com o pacote `epifitter` (fornece funções para análise do cálculo da AACPD), especificamente por meio da função `audpc()`. A função `audpc()` calcula a Área Abaixo da Curva de Progresso da Doença com base: na severidade da doença *(sev)* multiplicada por 100 (para expressar em %), e no tempo de avaliação *(time)*. O resultado é armazenado em *aacpd_resultado*, que contém uma linha para cada combinação de tratamento e bloco, com o valor correspondente da AACPD.
 
+
+
+
 ```{r}
 library(epifitter)
 library(dplyr)
@@ -755,18 +911,30 @@ print(aacpd_resultado)
 
 ```
 
+
+
+
 ### ANOVA
+
+
+
 
 ```{r}
 modelo_aacpd <- aov(AACPD ~ tratamento, data = aacpd_resultado)
 summary(modelo_aacpd)
 ```
 
+
+
+
 #### Checagem das premissas
 
 ##### Histograma
 
 O gráfico mostrou uma distribuição aproximadamente simétrica e centrada em torno de zero, o que indica que os resíduos seguem uma tendência próxima à distribuição normal.
+
+
+
 
 ```{r}
 # Histogram
@@ -778,9 +946,15 @@ hist(residuals(modelo_aacpd),
      border = "black")
 ```
 
+
+
+
 ##### DHARMa (AACPD)
 
 Os resultados indicaram que o modelo se comporta adequadamente, sem violações evidentes dos pressupostos estatísticos. Entretanto o resultado apresentado pelo teste de resíduos simulados *vs* valores preditos exige com o que seja necessário fazer testes adicionais.
+
+
+
 
 ```{r}
 modelo_lmaacpd <- lm(AACPD ~ tratamento + as.factor(block), data = aacpd_resultado)
@@ -792,9 +966,15 @@ residuos_simaacpd <- simulateResiduals(fittedModel = modelo_lmaacpd)
 plot(residuos_simaacpd)
 ```
 
+
+
+
 ###### Normalidade (AACPD)
 
 A normalidade dos resíduos do modelo de ANOVA para a variável *AACPD* foi avaliada por meio do gráfico QQ-Plot e do teste de Shapiro-Wilk. O gráfico indicou boa aderência dos resíduos à linha de normalidade. Já o teste de *Shapiro-Wilk* apresentou valor de *p* = 0,3125, indicando que não há evidência significativa de violação da normalidade (*p* \> 0,05). Portanto, o modelo atende ao pressuposto de normalidade dos resíduos, sendo apropriado para a análise.
+
+
+
 
 ```{r}
 check_normality(modelo_aacpd)
@@ -807,9 +987,15 @@ qqline(residuals(modelo_aacpd), col = "red", lwd = 2)
 shapiro.test(residuals(modelo_aacpd))
 ```
 
+
+
+
 ###### Homocedasticidade (AACPD)
 
 Esses dados confirmam a homocedasticidade dos dados, confirmando portanto a última premissa da ANOVA.
+
+
+
 
 ```{r}
 check_heteroscedasticity(modelo_aacpd)
@@ -822,7 +1008,13 @@ leveneTest(AACPD ~ tratamento, data = aacpd_resultado)
 
 ```
 
+
+
+
 ### Boxplot (AACPD)
+
+
+
 
 ```{r}
 aacpd_resultado2 <- aacpd_resultado %>%
@@ -882,7 +1074,13 @@ ggplot(aacpd_resultado2, aes(x = tratamento, y = AACPD, fill = irrigation_type, 
   )
 ```
 
+
+
+
 ### Teste de comparação de médias (AACPD)
+
+
+
 
 ```{r}
 # ANOVA já ajustada no objeto modelo_aacpd
@@ -901,6 +1099,9 @@ print(tukey_resultado$groups)
 
 ```
 
+
+
+
 A tabela abaixo apresenta as médias de AACPD e o agrupamento por letras. O agrupamento foi feito com base na comparação múltipla utilizando o método de TukeyHSD ajustado para Tukey (α = 0,05). Letras iguais indicam ausência de diferença estatística significativa.
 
 | Tratamento                              | Média AACPD | Grupo |
@@ -913,3 +1114,4 @@ A tabela abaixo apresenta as médias de AACPD e o agrupamento por letras. O agru
 | **MS above canopy + High moisture**     | 399.23      | de    |
 | **Overhead + Moderate moisture**        | 381.27      | e     |
 | **Overhead + High moisture**            | 368.43      | e     |
+
