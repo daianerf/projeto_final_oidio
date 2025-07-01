@@ -497,8 +497,6 @@ Filtra o conjunto dados_filtrados para manter apenas as observações no tempo 6
 dados_63 <- dados_filtrados |> 
   dplyr::filter(time == 63)
 
-aov_dados63 = aov(sev ~ irrigation_type*moisture + as.factor(block), data = dados_63)
-summary(aov_dados63)
 ```
 
 Após visualizar a severidade com todos os tempos de avaliação, selecionou-se apenas a severidade final para plotar em um boxplot.
@@ -560,12 +558,17 @@ Para a realização da ANOVA, foi considerado apenas o último tempo de avaliaç
 
 A análise do modelo de ANOVA foi realizada utilizando a função `aov`, a qual faz parte do pacote base do R. Os resultados da ANOVA foram obtidos com s`ummary(aov_dados63)`, permitindo a identificação de efeitos significativos entre os tratamentos.
 
+```{r}
+aov_dados63 = aov(sev ~ irrigation_type*moisture + as.factor(block), data = dados_63)
+summary(aov_dados63)
+```
+
 | Efeito | df | F value | Pr(\>F) | Significância |
 |---------------|---------------|---------------|---------------|---------------|
 | `irrigation_type` | 2 | 462.898 | 1.39e-10 | \*\*\* significativo ao nível de 0% |
 | `moisture` | 1 | 13.342 | 0.00444 | \*\* significativo ao nível de 0,1% |
 | `block` (como fator) | 2 | 0.221 | 0.80572 | NS |
-| `irrigation_type:moisture` | 2 | 3.661 | 0.06413 | . significativo ao nível de 5% |
+| `irrigation_type:moisture` | 2 | 3.661 | 0.06413 | . significativo ao nível de 10% |
 | `residual` | 10 | — | — | — |
 
 A hipótese nula (H₀) foi rejeitada, uma vez que os valores de *p* para os fatores principais foram menores que ao nível de significância de 0,05. Assim, aceita-se a hipótese alternativa (Hₐ), indicando que pelo menos um dos tratamentos difere significativamente dos demais.
@@ -579,7 +582,7 @@ A hipótese nula (H₀) foi rejeitada, uma vez que os valores de *p* para os fat
 -   Efeito do bloco (*block*):\
     Não significativo (p = 0,80572), indicando que a variação entre blocos foi mínima, o que pode ser interpretado como consistência entre repetições;
 
--   Interação entre irrigação e umidade (*irrigation_type:moisture*): Marginalmente significativa (p = 0,06413), a interação entre os fatores sugere que o efeito da umidade pode depender do tipo de irrigação. Embora não tenha atingido significância estatística ao nível de 5%, o valor de p indica uma tendência de interação que poderia se tornar significativa com um maior número de repetições ou uma amostra mais robusta, reduzindo a variabilidade e aumentando o poder do teste.
+-   Interação entre irrigação e umidade (*irrigation_type:moisture*): Marginalmente significativa (p = 0,06413), a interação entre os fatores sugere que o efeito da umidade pode depender do tipo de irrigação, embora não tenha atingido significância estatística ao nível de 5%.
 
 #### Checagem das premissas
 
@@ -599,13 +602,23 @@ hist(residuals(aov_dados63),
 
 ###### Interpretação
 
-Forma aproximadamente simétrica: a distribuição dos resíduos é centrada em torno de zero, o que é um indicativo positivo de normalidade. Os resíduos estão distribuídos em um intervalo relativamente estreito (aproximadamente entre -0,025 e 0,02), sugerindo ausência de valores extremos (*outliers*). A maior frequência de resíduos ocorre próxima de zero, o que é característico de distribuições normais.
+Forma aproximadamente simétrica: a distribuição dos resíduos é centrada em torno de zero, o que é um indicativo positivo de normalidade. Os resíduos estão distribuídos em um intervalo relativamente estreito (aproximadamente entre -0,025 e 0,02), sugerindo ausência de valores extremos (*outliers*).
 
 ##### DHARMa
 
 Para avaliar as suposições do modelo linear ajustado, foi utilizada a simulação de resíduos por meio do pacote `DHARMa`.
 
 Primeiramente, foi ajustado um modelo linear aos dados. Em seguida, os resíduos foram simulados com a função `simulateResiduals()` do pacote `DHARMa`, que gera resíduos padronizados baseados em simulações sob o modelo ajustado. Essa abordagem é especialmente útil para detectar desvios de normalidade, heterocedasticidade e efeitos de estrutura nos dados.
+
+```{r}
+modelo_lm <- lm(sev ~ irrigation_type * moisture + as.factor(block), data = dados_63)
+
+# 4. Simular resíduos com DHARMa
+residuos_sim <- simulateResiduals(fittedModel = modelo_lm)
+
+# 5. Plotar diagnósticos
+plot(residuos_sim)
+```
 
 ###### Painel esquerdo - QQ-plot dos resíduos simulados:
 
@@ -625,27 +638,17 @@ Os resíduos estão aproximadamente normais e sem outliers problemáticos. Press
 
 O que o gráfico indica:
 
-Red curves = significância estatística: a presença de curvas vermelhas indica que houve desvio significativo dos quantis esperados.
+**Red curves:** significância estatística - a presença de curvas vermelhas indica que houve desvio significativo dos quantis esperados.
 
 O texto vermelho confirma: Isso não é um problema grave, mas sugere que:
 
-Pode haver algum padrão residual leve, talvez relacionado a variâncias diferentes entre grupos (heterocedasticidade leve).
+-   Pode haver algum padrão residual leve, talvez relacionado a variâncias diferentes entre grupos (heterocedasticidade leve);
 
-Isso não invalida o modelo, mas é um sinal para cautela na interpretação dos efeitos.
+-   Isso não invalida o modelo, mas é um sinal para cautela na interpretação dos efeitos;
 
-Por isso, foi realizado o leveneTest() para confirmar se há heterocedasticidade.
+-   Por isso, foi realizado o leveneTest() para confirmar se há heterocedasticidade.
 
 Depois foram  utilizados testes mais específicos para verificar a normalidade:
-
-```{r}
-modelo_lm <- lm(sev ~ irrigation_type * moisture + as.factor(block), data = dados_63)
-
-# 4. Simular resíduos com DHARMa
-residuos_sim <- simulateResiduals(fittedModel = modelo_lm)
-
-# 5. Plotar diagnósticos
-plot(residuos_sim)
-```
 
 ###### Normalidade
 
@@ -668,9 +671,7 @@ shapiro.test(residuals(aov_dados63))
 
 ###### Homocedasticidade
 
-Teste geral com check_heteroscedasticity().
-
-#### **Testes estatísticos:**
+Primeiramente testou-se a homocedasticidade com a função `check_heteroscedasticity()`.
 
 **Bartlett’s test (**`bartlett.test`**):** É indicado apenas quando os resíduos seguem uma distribuição normal. 
 
@@ -693,6 +694,10 @@ leveneTest(sev ~ interaction(irrigation_type, moisture), data = dados_63)
 
 ### Teste de comparação de médias
 
+A função `emmeans()` (Estimated Marginal Means) calcula as médias ajustadas — também conhecidas como médias marginais estimadas — para as combinações dos fatores `irrigation_type` e `moisture`, com base no modelo ajustado `modelo_lm`.
+
+A função `cld()` (Compact Letter Display) agrupa os tratamentos com base nas comparações múltiplas de médias.
+
 ```{r}
 # Médias ajustadas
 medias <- emmeans(modelo_lm, ~ irrigation_type * moisture)
@@ -704,7 +709,7 @@ letras <- cld(medias, adjust = "sidak", Letters = letters)
 print(letras)
 ```
 
-A tabela abaixo apresenta as médias ajustadas da severidade da doença para cada combinação de tipo de irrigação e umidade, incluindo erro padrão, intervalos de confiança, e o agrupamento por letras. O agrupamento foi feito com base na comparação múltipla utilizando o método de Sidak ajustado para Tukey (α = 0,05). Letras iguais indicam ausência de diferença estatística significativa.
+As médias ajustadas foram comparadas por meio de contrastes pareados com correção de Sidak, apropriada para múltiplas comparações entre combinações de tratamentos fatoriais. Grupos com letras iguais não diferem entre si ao nível de significância de 5%.
 
 |  |  |  |  |  |  |  |  |
 |---------|---------|---------|---------|---------|---------|---------|---------|
