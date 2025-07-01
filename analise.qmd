@@ -22,11 +22,35 @@ Por meio da análise dos dados, objetivou-se avaliar a influência de diferentes
 
 # **Hipóteses testadas**
 
-**Hipótese nula (H₀):\
-**Não há diferença significativa na severidade da doença entre os diferentes tipos de irrigação e níveis de umidade do solo. A média da severidade é igual em todos os tratamentos avaliados.
+-   **Efeito do tipo de irrigação**
 
-**Hipótese alternativa (Hₐ):\
-**Pelo menos uma das combinações de tipo de irrigação e nível de umidade apresenta severidade significativamente diferente das demais, indicando efeito do tratamento sobre o desenvolvimento da doença.
+    -   Hipótese nula (H₀₁):
+
+        -   Não há diferença significativa na severidade da doença entre os diferentes tipos de irrigação;
+
+    -   Hipótese alternativa (H₁₁):
+
+        -   Pelo menos um tipo de irrigação resulta em severidade significativamente diferente dos demais.
+
+-   **Efeito do nível de umidade do solo**
+
+    -   Hipótese nula (H₀₂):
+
+        -   Não há diferença significativa na severidade da doença entre os níveis de umidade do solo;
+
+    -   Hipótese alternativa (H₁₂):
+
+        -   Pelo menos um nível de umidade resulta em severidade significativamente diferente dos demais.
+
+-   **Interação entre tipo de irrigação e umidade do solo**
+
+    -   Hipótese nula (H₀₃):
+
+        -   Não há interação entre tipo de irrigação e nível de umidade. O efeito de um fator é independente do outro;
+
+    -   Hipótese alternativa (H₁₃):
+
+        -   Existe interação entre os fatores, ou seja, o efeito de um tipo de irrigação depende do nível de umidade do solo.
 
 ## Análise da variável resposta (Severidade do oídio)
 
@@ -158,7 +182,7 @@ cores_contorno <- c(
 
 ### Análise exploratória dos dados
 
-Na etapa inicial da análise exploratória, foi utilizada a função `plot_missing()` do pacote `DataExplorer`, que gera um gráfico de barras indicando a porcentagem de dados faltantes (valores NA) por variável no conjunto de dados. Essa visualização permite identificar rapidamente colunas com problemas de completude, facilitando decisões sobre limpeza ou imputação de dados. O gráfico gerado foi personalizado com o título "Dados Faltantes", e o tema visual foi ajustado com `theme_hc()` para melhor apresentação.
+Na etapa inicial da análise exploratória, foi utilizada a função `plot_missing()` do pacote `DataExplorer`, que gera um gráfico indicando a porcentagem de dados faltantes (valores NA) por variável no conjunto de dados. Essa visualização permite identificar rapidamente colunas com dados faltantes, facilitando decisões sobre as análises subsequentes.
 
 ```{r}
 plot_missing(dados)
