@@ -2,7 +2,7 @@
 title: "Obtenção dos dados"
 ---
 
-Os dados utilizados neste estudo foram obtidos a partir do conjunto *PowderyMildew*, disponível no pacote `Epifitter` do R (RStudio®). Este conjunto reúne informações experimentais sobre a progressão do oídio (*Leveillula taurica*) em tomateiros cultivados sob diferentes sistemas de irrigação e níveis de umidade do solo,em um sistema de produção orgânico.
+Os dados utilizados neste estudo foram obtidos a partir do conjunto *PowderyMildew*, disponível no pacote `Epifitter` do R (RStudio®). Este conjunto reúne informações experimentais sobre a progressão do oídio (*Leveillula taurica*) em tomateiros cultivados sob diferentes sistemas de irrigação e níveis de umidade do solo, em um sistema de produção orgânico.
 
 O pacote `Epifitter` foi desenvolvido para facilitar a análise epidemiológica de doenças em plantas, oferecendo um conjunto de funções para visualização, descrição, ajuste e comparação de curvas de progresso de doenças.
 
